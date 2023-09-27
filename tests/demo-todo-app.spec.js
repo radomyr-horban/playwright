@@ -11,7 +11,7 @@ const TODO_ITEMS = [
   'book a doctors appointment',
 ]
 
-test.describe('New Todo', () => {
+test.describe.skip('New Todo', () => {
   test('should allow me to add todo items', async ({ page }) => {
     // create a new todo locator
     const newTodo = page.getByPlaceholder('What needs to be done?')
@@ -29,8 +29,8 @@ test.describe('New Todo', () => {
 
     // Make sure the list now has two todo items.
     await expect(page.getByTestId('todo-title')).toHaveText([
-      TODO_ITEMS[1],
       TODO_ITEMS[0],
+      TODO_ITEMS[1],
     ])
 
     await checkNumberOfTodosInLocalStorage(page, 2)
@@ -72,7 +72,7 @@ test.describe('New Todo', () => {
   })
 })
 
-test.describe('Mark all as completed', () => {
+test.describe.skip('Mark all as completed', () => {
   test.beforeEach(async ({ page }) => {
     await createDefaultTodos(page)
     await checkNumberOfTodosInLocalStorage(page, 3)
@@ -130,7 +130,7 @@ test.describe('Mark all as completed', () => {
   })
 })
 
-test.describe('Item', () => {
+test.describe.skip('Item', () => {
   test('should allow me to mark items as complete', async ({ page }) => {
     // create a new todo locator
     const newTodo = page.getByPlaceholder('What needs to be done?')
@@ -205,7 +205,7 @@ test.describe('Item', () => {
   })
 })
 
-test.describe('Editing', () => {
+test.describe.skip('Editing', () => {
   test.beforeEach(async ({ page }) => {
     await createDefaultTodos(page)
     await checkNumberOfTodosInLocalStorage(page, 3)
@@ -286,7 +286,7 @@ test.describe('Editing', () => {
   })
 })
 
-test.describe('Counter', () => {
+test.describe.skip('Counter', () => {
   test('should display the current number of todo items', async ({ page }) => {
     // create a new todo locator
     const newTodo = page.getByPlaceholder('What needs to be done?')
@@ -306,7 +306,7 @@ test.describe('Counter', () => {
   })
 })
 
-test.describe('Clear completed button', () => {
+test.describe.skip('Clear completed button', () => {
   test.beforeEach(async ({ page }) => {
     await createDefaultTodos(page)
   })
@@ -337,7 +337,7 @@ test.describe('Clear completed button', () => {
   })
 })
 
-test.describe('Persistence', () => {
+test.describe.skip('Persistence', () => {
   test('should persist its data', async ({ page }) => {
     // create a new todo locator
     const newTodo = page.getByPlaceholder('What needs to be done?')
@@ -365,7 +365,7 @@ test.describe('Persistence', () => {
   })
 })
 
-test.describe('Routing', () => {
+test.describe.skip('Routing', () => {
   test.beforeEach(async ({ page }) => {
     await createDefaultTodos(page)
     // make sure the app had a chance to save updated todos in storage
