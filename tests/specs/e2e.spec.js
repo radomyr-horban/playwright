@@ -113,7 +113,7 @@ test.describe.skip('Registration page', () => {
   })
 })
 
-test.describe.skip('Top menu links', () => {
+test.describe('Top menu links', () => {
   test('should open to the correspong pages', async ({ page }) => {
     const topMenu = new TopMenu(page)
     const topMenuLinksUrl = topMenu.topMenuLinksUrl
