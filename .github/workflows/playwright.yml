@@ -37,6 +37,11 @@ jobs:
       # - name: Create Allure report
       #   run: allure generate allure-results -o allure-report --clean
 
+      - name: Configure Git
+        run: |
+          git config user.name "Radomyr Horba"
+          git config user.email "horban.radomyr@gmail.com"
+
       - name: Create and push allure-report branch
         run: |
           git checkout -b allure-report
