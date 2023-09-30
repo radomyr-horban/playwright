@@ -35,7 +35,7 @@ jobs:
           cp -r allure-report/* allure-results/
 
       - name: Create Allure report
-        run: allure generate my-allure-results -o allure-report --clean
+        run: allure generate allure-results -o allure-report --clean
 
       - name: Create and push allure-report branch
         run: |
@@ -51,15 +51,4 @@ jobs:
           mv allure-results .github/pages
           git add .github/pages
           git commit -m "Publish Allure report to GitHub Pages"
-          git push origin allure-report
-
-      - name: Add link to branch description
-        run: |
-          allureReportURL=$(curl -s https://api.github.com/repos/$GITHUB_REPOSITORY/pages | jq -r '.html_url')
-          allureReportLink="[Allure Report]($allureReportURL)"
-          echo "Allure Report: $allureReportLink" >> branch-description.txt
-          git checkout allure-report
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git commit --allow-empty -F branch-description.txt
           git push origin allure-report
