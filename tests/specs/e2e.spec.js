@@ -15,9 +15,9 @@ test.beforeEach(async ({ page }) => {
   await page.goto('https://www.redmine.org/')
 })
 
-test.describe.skip('Main page', () => {
+test.describe('Main page', () => {
   //! Redirection in the “Readmine books” section
-  test.skip('should redirect the browser after clicking on the book image', async ({
+  test('should redirect the browser after clicking on the book image', async ({
     page,
   }) => {
     // const mainPage = new MainPage(page)
@@ -31,7 +31,7 @@ test.describe.skip('Main page', () => {
     // await expect(page).toHaveURL('https://www.redmine.org')
   })
   //! Search
-  test.skip('should open the results page with the searched word ', async ({
+  test('should open the results page with the searched word ', async ({
     page,
   }) => {
     const topMenu = new TopMenu(page)
@@ -39,7 +39,7 @@ test.describe.skip('Main page', () => {
   })
 })
 
-test.describe.skip('Issues page', () => {
+test.describe('Issues page', () => {
   test('should show page number in the URL after clicking on the pagination', async ({
     page,
   }) => {
@@ -78,7 +78,7 @@ test.describe.skip('Issues page', () => {
   })
 })
 
-test.describe.skip('Registration page', () => {
+test.describe('Registration page', () => {
   test('should allow a user to register', async ({ page }) => {
     const topMenu = new TopMenu(page)
     const registerPage = new RegisterPage(page)
