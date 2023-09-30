@@ -18,24 +18,27 @@ jobs:
           node-version: 18
       - name: Install dependencies
         run: npm ci
+      #! new
+      - name: Build
+        run: npm run build --if-present
+
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Run Playwright tests
         run: npx playwright test
-      - uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: allure-report
-          path: allure-report/
-          retention-days: 30
+
+      # - uses: actions/upload-artifact@v3
+      #   if: always()
+      #   with:
+      #     name: allure-report
+      #     path: allure-report/
+      #     retention-days: 30
 
   #!new codee
   allure:
     name: Generate Allure Report
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-
       - name: Get Allure history
         uses: actions/checkout@v3
         if: always()
@@ -49,12 +52,12 @@ jobs:
         if: always()
         id: allure-report
         with:
-          allure_results: build/allure-results
+          allure_results: allure-results
           gh_pages: gh-pages
           allure_report: allure-report
           allure_history: allure-history
 
-      - name: Deploy Allure report to GitHub Pages
+      - name: Deploy Report to GitHub Pages
         if: always()
         uses: peaceiris/actions-gh-pages@v3
         with:
