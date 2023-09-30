@@ -23,32 +23,6 @@ jobs:
       - uses: actions/upload-artifact@v3
         if: always()
         with:
-          # name: playwright-report
-          # path: playwright-report/
-          name: allure-report
-          path: allure-report/
+          name: playwright-report
+          path: playwright-report/
           retention-days: 30
-      #!new code
-      - name: Copy Allure report
-        run: |
-          mkdir -p allure-results
-          cp -r allure-report/* allure-results/
-
-      - name: Create Allure report
-        run: allure generate allure-results -o allure-report --clean
-
-      - name: Create and push allure-report branch
-        run: |
-          git checkout -b allure-report
-          git add allure-results
-          git commit -m "Add Allure report"
-          git push origin allure-report
-
-      - name: Publish Allure report to GitHub Pages
-        run: |
-          git checkout allure-report
-          mkdir -p .github/pages
-          mv allure-results .github/pages
-          git add .github/pages
-          git commit -m "Publish Allure report to GitHub Pages"
-          git push origin allure-report
