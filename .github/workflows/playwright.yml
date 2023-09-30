@@ -28,11 +28,40 @@ jobs:
           name: allure-report
           path: allure-report/
           retention-days: 30
+
       #!new code
-      - name: Configure Git
-        run: |
-          git config user.name "Radomyr Horban"
-          git config user.email "horban.radomyr@gmail.com"
+      - name: Get Allure history
+        uses: actions/checkout@v3
+        if: always()
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Allure Report action from marketplace
+        uses: simple-elf/allure-report-action@master
+        if: always()
+        id: allure-report
+        with:
+          allure_results: allure-results
+          gh_pages: gh-pages
+          allure_report: allure-report
+          allure_history: allure-history
+
+      - name: Deploy Allure report to GitHub Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v3
+        env:
+          PERSONAL_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          PUBLISH_BRANCH: gh-pages
+          PUBLISH_DIR: allure-history
+
+        # with:
+
+      # - name: Configure Git
+      #   run: |
+      #     git config user.name "Radomyr Horban"
+      #     git config user.email "horban.radomyr@gmail.com"
 
       # - name: Copy Allure report
       #   run: |
@@ -42,29 +71,29 @@ jobs:
       # - name: Create Allure report
       #   run: allure generate allure-results -o allure-report --clean
 
-      - name: Create and push `allure-report` branch
-        run: |
-          git checkout -b allure-report
-          git add allure-results
-          git commit -m "Add Allure report"
-          git push origin allure-report
+      # - name: Create and push `allure-report` branch
+      #   run: |
+      #     git checkout -b allure-report
+      #     git add allure-results
+      #     git commit -m "Add Allure report"
+      #     git push origin allure-report
 
-      - uses: actions/upload-artifact@v1
-        if: always()
-        with:
-          name: demoAllureReport
-          path: allure-report
+      # - uses: actions/upload-artifact@v1
+      # if: always()
+      #   with:
+      #     name: demoAllureReport
+      #     path: allure-report
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v2
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
-        with:
-          # Upload entire repository
-          path: allure-report
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v1
+      # - name: Setup Pages
+      #   uses: actions/configure-pages@v2
+      # - name: Upload artifact
+      #   uses: actions/upload-pages-artifact@v1
+      #   with:
+      #     # Upload entire repository
+      #     path: allure-report
+      # - name: Deploy to GitHub Pages
+      #   id: deployment
+      #   uses: actions/deploy-pages@v1
 
       # - name: Publish Allure report to GitHub Pages
       #   run: |
