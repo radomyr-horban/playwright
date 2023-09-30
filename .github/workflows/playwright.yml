@@ -34,8 +34,8 @@ jobs:
           mkdir -p allure-results
           cp -r allure-report/* allure-results/
 
-      - name: Create Allure report
-        run: allure generate allure-results -o allure-report --clean
+      # - name: Create Allure report
+      #   run: allure generate allure-results -o allure-report --clean
 
       - name: Create and push allure-report branch
         run: |
