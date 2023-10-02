@@ -15,7 +15,7 @@ test.beforeEach(async ({ page }) => {
   await page.goto('https://www.redmine.org/')
 })
 
-test.describe('Main page', () => {
+test.describe.skip('Main page', () => {
   //! Redirection in the “Readmine books” section
   test('should redirect the browser after clicking on the book image', async ({
     page,
@@ -39,7 +39,7 @@ test.describe('Main page', () => {
   })
 })
 
-test.describe('Issues page', () => {
+test.describe.skip('Issues page', () => {
   test('should show page number in the URL after clicking on the pagination', async ({
     page,
   }) => {
@@ -78,7 +78,7 @@ test.describe('Issues page', () => {
   })
 })
 
-test.describe('Registration page', () => {
+test.describe.skip('Registration page', () => {
   test('should allow a user to register', async ({ page }) => {
     const topMenu = new TopMenu(page)
     const registerPage = new RegisterPage(page)

@@ -18,28 +18,17 @@ jobs:
           node-version: 18
       - name: Install dependencies
         run: npm ci
-      #! new
-      # - name: Build
-      #   run: npm run build --if-present
-
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Run Playwright tests
         run: npx playwright test
-
-      # - uses: actions/upload-artifact@v3
-      #   if: always()
-      #   with:
-      #     name: allure-report
-      #     path: allure-report/
-      #     retention-days: 30
 
   #!new codee
   allure:
     name: Generate Allure Report
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      # - uses: actions/checkout@v3
 
       - name: Get Allure history
         uses: actions/checkout@v3
@@ -66,8 +55,23 @@ jobs:
         with:
           PERSONAL_TOKEN: ${{secrets.GITHUB_TOKEN}}
           PUBLISH_BRANCH: gh-pages
-          # PUBLISH_DIR: allure-history
           PUBLISH_DIR: allure-report
+
+      - name: Add link to branch description
+        run: |
+          echo "Allure Report: [GitHub Pages](https://github.com/$GITHUB_REPOSITORY/tree/gh-pages)" >> branch-description.txt
+
+      # - name: Post the link to the report
+      #   if: always()
+      #   uses: Sibz/github-status-action@v1
+      #   with:
+      #     authToken: ${{secrets.GITHUB_TOKEN}}
+      #     context: 'Test report'
+      #     state: 'success'
+      #     sha: ${{ github.event.pull_request.head.sha }}
+      #     #! I can only add this link if the website is ready
+      #     # target_url: simple-elf.github.io/github-allure-history/${{ github.run_number }}
+      #     target_url: radomyr-horban.github.io/playwright/${{ github.run_number }}
 
       # - name: Configure Git
       #   run: |
@@ -88,15 +92,3 @@ jobs:
       #     git add allure-results
       #     git commit -m "Add Allure report"
       #     git push origin allure-report
-
-      # - name: Post the link to the report
-      #   if: always()
-      #   uses: Sibz/github-status-action@v1
-      #   with:
-      #     authToken: ${{secrets.GITHUB_TOKEN}}
-      #     context: 'Test report'
-      #     state: 'success'
-      #     sha: ${{ github.event.pull_request.head.sha }}
-      #     #! I can only add this link if the website is ready
-      #     # target_url: simple-elf.github.io/github-allure-history/${{ github.run_number }}
-      #     target_url: radomyr-horban.github.io/playwright/${{ github.run_number }}
