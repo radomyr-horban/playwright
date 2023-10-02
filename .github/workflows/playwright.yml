@@ -35,17 +35,17 @@ jobs:
           git config user.email "horban.radomyr@gmail.com"
 
       # ! create a new branch first
-      - name: Create and push `allure-report-gh` branch
-        run: |
-          git checkout -b allure-report-gh
+      # - name: Create and push `allure-report-gh` branch
+      #   run: |
+      #     git checkout -b allure-report-gh
 
       - name: Get Allure history
         uses: actions/checkout@v3
         if: always()
         continue-on-error: true
         with:
-          ref: allure-report-gh
-          path: allure-report-gh
+          ref: gh-pages
+          path: gh-pages
 
       - name: Allure Report action from marketplace
         uses: simple-elf/allure-report-action@master
@@ -53,7 +53,7 @@ jobs:
         id: allure-report
         with:
           allure_results: allure-results
-          gh_pages: allure-report-gh
+          gh_pages: gh-pages
           allure_report: allure-report
           #! important folder!
           # allure_history: allure-history
@@ -64,6 +64,6 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           PERSONAL_TOKEN: ${{secrets.GITHUB_TOKEN}}
-          PUBLISH_BRANCH: allure-report-gh
+          PUBLISH_BRANCH: gh-pages
           PUBLISH_DIR: last-history
           # PUBLISH_DIR: allure-report
