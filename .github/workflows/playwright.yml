@@ -23,7 +23,6 @@ jobs:
       - name: Run Playwright tests
         run: npx playwright test
 
-  #!new codee
   allure:
     name: Generate Allure Report
     runs-on: ubuntu-latest
@@ -66,18 +65,3 @@ jobs:
           PERSONAL_TOKEN: ${{secrets.GITHUB_TOKEN}}
           PUBLISH_BRANCH: allure-report-gh
           PUBLISH_DIR: allure-report
-
-          # - name: Copy Allure report
-          #   run: |
-          #     mkdir -p allure-results
-          #     cp -r allure-report/* allure-results/
-
-      #! Add a link
-      # - name: Post the link to the report
-      #   if: always()
-      #   uses: Sibz/github-status-action@v1
-      #   with:
-      #     authToken: ${{secrets.GITHUB_TOKEN}}
-      #     context: 'Test report'
-      #     state: 'success'
-      #     sha: ${{ github.event.pull_request.head.sha || github.sha}}
