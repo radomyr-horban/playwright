@@ -39,9 +39,6 @@ jobs:
       - name: Create and push `allure-report-gh` branch
         run: |
           git checkout -b allure-report
-          git add allure-results
-          git commit -m "Add Allure report"
-          git push origin allure-report
 
       - name: Get Allure history
         uses: actions/checkout@v3
