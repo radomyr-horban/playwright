@@ -35,17 +35,17 @@ jobs:
           git config user.email "horban.radomyr@gmail.com"
 
       # ! create a new branch first
-      # - name: Create and push `allure-report-gh` branch
-      #   run: |
-      #     git checkout -b allure-report-gh
+      - name: Create and push `allure-report-gh` branch
+        run: |
+          git checkout -b allure-report-gh
 
       - name: Get Allure history
         uses: actions/checkout@v3
         if: always()
         continue-on-error: true
         with:
-          ref: gh-pages
-          path: gh-pages
+          ref: allure-report-gh
+          path: allure-report-gh
 
       - name: Allure Report action from marketplace
         uses: simple-elf/allure-report-action@master
@@ -53,17 +53,15 @@ jobs:
         id: allure-report
         with:
           allure_results: allure-results
-          gh_pages: gh-pages
+          gh_pages: allure-report-gh
           allure_report: allure-report
-          #! do I have such a folder?
+          #! important folder!
           allure_history: allure-history
-          # allure_history: last-history
 
       - name: Deploy report to GitHub Pages
         if: always()
         uses: peaceiris/actions-gh-pages@v3
         with:
           PERSONAL_TOKEN: ${{secrets.GITHUB_TOKEN}}
-          PUBLISH_BRANCH: gh-pages
-          # PUBLISH_DIR: allure-report
+          PUBLISH_BRANCH: allure-report-gh
           PUBLISH_DIR: allure-report
