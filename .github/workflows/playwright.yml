@@ -34,13 +34,21 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      # ! create a new branch first
+      - name: Create and push `allure-report-gh` branch
+        run: |
+          git checkout -b allure-report
+          git add allure-results
+          git commit -m "Add Allure report"
+          git push origin allure-report
+
       - name: Get Allure history
         uses: actions/checkout@v3
         if: always()
         continue-on-error: true
         with:
-          ref: g-pages
-          path: g-pages
+          ref: allure-report-gh
+          path: allure-report-gh
 
       - name: Allure Report action from marketplace
         uses: simple-elf/allure-report-action@master
@@ -48,7 +56,7 @@ jobs:
         id: allure-report
         with:
           allure_results: allure-results
-          gh_pages: g-pages
+          gh_pages: allure-report-gh
           allure_report: allure-report
           #! do I have such a folder?
           allure_history: allure-history
@@ -58,20 +66,13 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           PERSONAL_TOKEN: ${{secrets.GITHUB_TOKEN}}
-          PUBLISH_BRANCH: g-pages
+          PUBLISH_BRANCH: allure-report-gh
           PUBLISH_DIR: allure-report
 
           # - name: Copy Allure report
           #   run: |
           #     mkdir -p allure-results
           #     cp -r allure-report/* allure-results/
-
-          # - name: Create and push `allure-report` branch
-      #   run: |
-      #     git checkout -b allure-report
-      #     git add allure-results
-      #     git commit -m "Add Allure report"
-      #     git push origin allure-report
 
       #! Add a link
       # - name: Post the link to the report
