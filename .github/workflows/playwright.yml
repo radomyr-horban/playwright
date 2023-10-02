@@ -23,6 +23,10 @@ jobs:
       - name: Run Playwright tests
         run: npx playwright test
 
+        # - name: Configure Git
+        #   run: |
+        #     git config user.name "Radomyr Horban"
+        #     git config user.email "horban.radomyr@gmail.com"
   #!new codee
   allure:
     name: Generate Allure Report
@@ -35,8 +39,8 @@ jobs:
         if: always()
         continue-on-error: true
         with:
-          ref: gh-pages
-          path: gh-pages
+          ref: g-pages
+          path: g-pages
 
       - name: Allure Report action from marketplace
         uses: simple-elf/allure-report-action@master
@@ -44,7 +48,7 @@ jobs:
         id: allure-report
         with:
           allure_results: allure-results
-          gh_pages: gh-pages
+          gh_pages: g-pages
           allure_report: allure-report
           #! do I have such a folder?
           allure_history: allure-history
@@ -54,29 +58,22 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           PERSONAL_TOKEN: ${{secrets.GITHUB_TOKEN}}
-          PUBLISH_BRANCH: gh-pages
+          PUBLISH_BRANCH: g-pages
           PUBLISH_DIR: allure-report
 
-      # - name: Add link to branch description
+          # - name: Copy Allure report
+          #   run: |
+          #     mkdir -p allure-results
+          #     cp -r allure-report/* allure-results/
+
+          # - name: Create and push `allure-report` branch
       #   run: |
-      #     echo "Allure Report: [GitHub Pages](https://radomyr-horban.github.com/$GITHUB_REPOSITORY/tree/gh-pages/allure-report)" >> branch-description.txt
-      #     # git checkout gh-pages
+      #     git checkout -b allure-report
+      #     git add allure-results
+      #     git commit -m "Add Allure report"
+      #     git push origin allure-report
 
-      #     # git config user.name "Radomyr Horban"
-      #     # git config user.email "horban.radomyr@gmail.com"
-
-      #     # git commit --allow-empty -F branch-description.txt
-      #     # git push origin gh-pages
-      - name: Post the link to the report
-        if: always()
-        uses: Sibz/github-status-action@v1
-        with:
-          authToken: ${{secrets.GITHUB_TOKEN}}
-          context: 'Test report'
-          state: 'success'
-          sha: ${{ github.event.pull_request.head.sha || github.sha}}
-          # target_url: simple-elf.github.io/github-allure-history/${{ github.run_number }}
-
+      #! Add a link
       # - name: Post the link to the report
       #   if: always()
       #   uses: Sibz/github-status-action@v1
@@ -84,27 +81,4 @@ jobs:
       #     authToken: ${{secrets.GITHUB_TOKEN}}
       #     context: 'Test report'
       #     state: 'success'
-      #     sha: ${{ github.event.pull_request.head.sha }}
-      #     #! I can only add this link if the website is ready
-      #     # target_url: simple-elf.github.io/github-allure-history/${{ github.run_number }}
-      #     target_url: radomyr-horban.github.io/playwright/${{ github.run_number }}
-
-      # - name: Configure Git
-      #   run: |
-      #     git config user.name "Radomyr Horban"
-      #     git config user.email "horban.radomyr@gmail.com"
-
-      # - name: Copy Allure report
-      #   run: |
-      #     mkdir -p allure-results
-      #     cp -r allure-report/* allure-results/
-
-      # - name: Create Allure report
-      #   run: allure generate allure-results -o allure-report --clean
-
-      # - name: Create and push `allure-report` branch
-      #   run: |
-      #     git checkout -b allure-report
-      #     git add allure-results
-      #     git commit -m "Add Allure report"
-      #     git push origin allure-report
+      #     sha: ${{ github.event.pull_request.head.sha || github.sha}}
