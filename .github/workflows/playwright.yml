@@ -23,16 +23,17 @@ jobs:
       - name: Run Playwright tests
         run: npx playwright test
 
-        # - name: Configure Git
-        #   run: |
-        #     git config user.name "Radomyr Horban"
-        #     git config user.email "horban.radomyr@gmail.com"
   #!new codee
   allure:
     name: Generate Allure Report
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      - name: Configure Git
+        run: |
+          git config user.name "Radomyr Horban"
+          git config user.email "horban.radomyr@gmail.com"
 
       # ! create a new branch first
       - name: Create and push `allure-report-gh` branch
