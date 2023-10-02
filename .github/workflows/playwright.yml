@@ -56,8 +56,8 @@ jobs:
           gh_pages: gh-pages
           allure_report: allure-report
           #! do I have such a folder?
-          # allure_history: allure-history
-          allure_history: last-history
+          allure_history: allure-history
+          # allure_history: last-history
 
       - name: Deploy report to GitHub Pages
         if: always()
