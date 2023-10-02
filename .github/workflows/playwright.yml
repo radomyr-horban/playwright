@@ -57,16 +57,25 @@ jobs:
           PUBLISH_BRANCH: gh-pages
           PUBLISH_DIR: allure-report
 
-      - name: Add link to branch description
-        run: |
-          echo "Allure Report: [GitHub Pages](https://radomyr-horban.github.com/$GITHUB_REPOSITORY/tree/gh-pages/allure-report)" >> branch-description.txt
-          # git checkout gh-pages
+      # - name: Add link to branch description
+      #   run: |
+      #     echo "Allure Report: [GitHub Pages](https://radomyr-horban.github.com/$GITHUB_REPOSITORY/tree/gh-pages/allure-report)" >> branch-description.txt
+      #     # git checkout gh-pages
 
-          # git config user.name "Radomyr Horban"
-          # git config user.email "horban.radomyr@gmail.com"
+      #     # git config user.name "Radomyr Horban"
+      #     # git config user.email "horban.radomyr@gmail.com"
 
-          # git commit --allow-empty -F branch-description.txt
-          # git push origin gh-pages
+      #     # git commit --allow-empty -F branch-description.txt
+      #     # git push origin gh-pages
+      - name: Post the link to the report
+        if: always()
+        uses: Sibz/github-status-action@v1
+        with:
+          authToken: ${{secrets.GITHUB_TOKEN}}
+          context: 'Test report'
+          state: 'success'
+          sha: ${{ github.event.pull_request.head.sha || github.sha}}
+          # target_url: simple-elf.github.io/github-allure-history/${{ github.run_number }}
 
       # - name: Post the link to the report
       #   if: always()
