@@ -39,6 +39,8 @@ jobs:
     name: Generate Allure Report
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+
       - name: Get Allure history
         uses: actions/checkout@v3
         if: always()
@@ -55,6 +57,7 @@ jobs:
           allure_results: allure-results
           gh_pages: gh-pages
           allure_report: allure-report
+          #! do I have such a folder?
           allure_history: allure-history
 
       - name: Deploy report to GitHub Pages
@@ -63,21 +66,8 @@ jobs:
         with:
           PERSONAL_TOKEN: ${{secrets.GITHUB_TOKEN}}
           PUBLISH_BRANCH: gh-pages
-          PUBLISH_DIR: allure-history
-
-      # - name: Post the link to the report
-      #   if: always()
-      #   uses: Sibz/github-status-action@v1
-      #   with:
-      #     authToken: ${{secrets.GITHUB_TOKEN}}
-      #     context: 'Test report'
-      #     state: 'success'
-      #     sha: ${{ github.event.pull_request.head.sha }}
-      #     #! I can only add this link if the website is ready
-      #     # target_url: simple-elf.github.io/github-allure-history/${{ github.run_number }}
-      #     target_url: radomyr-horban.github.io/playwright/${{ github.run_number }}
-
-      # with:
+          # PUBLISH_DIR: allure-history
+          PUBLISH_DIR: allure-report
 
       # - name: Configure Git
       #   run: |
@@ -99,19 +89,14 @@ jobs:
       #     git commit -m "Add Allure report"
       #     git push origin allure-report
 
-      # - uses: actions/upload-artifact@v1
-      # if: always()
+      # - name: Post the link to the report
+      #   if: always()
+      #   uses: Sibz/github-status-action@v1
       #   with:
-      #     name: demoAllureReport
-      #     path: allure-report
-
-      # - name: Setup Pages
-      #   uses: actions/configure-pages@v2
-      # - name: Upload artifact
-      #   uses: actions/upload-pages-artifact@v1
-      #   with:
-      #     # Upload entire repository
-      #     path: allure-report
-      # - name: Deploy to GitHub Pages
-      #   id: deployment
-      #   uses: actions/deploy-pages@v1
+      #     authToken: ${{secrets.GITHUB_TOKEN}}
+      #     context: 'Test report'
+      #     state: 'success'
+      #     sha: ${{ github.event.pull_request.head.sha }}
+      #     #! I can only add this link if the website is ready
+      #     # target_url: simple-elf.github.io/github-allure-history/${{ github.run_number }}
+      #     target_url: radomyr-horban.github.io/playwright/${{ github.run_number }}
