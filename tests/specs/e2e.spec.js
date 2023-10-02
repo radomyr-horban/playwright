@@ -1,5 +1,10 @@
 // @ts-check
+
 const { test, expect } = require('@playwright/test')
+const { chromium } = require('playwright')
+
+const { PlaywrightBlocker } = require('@cliqz/adblocker-playwright')
+const { default: fetch } = require('cross-fetch')
 
 const { default: MainMenu } = require('../components/main-menu')
 const { default: TopMenu } = require('../components/top-menu')
@@ -11,75 +16,55 @@ const { default: LoginPage } = require('../pages/login.page')
 
 const { generateUserData } = require('../helpers/generateUserData.helper')
 
-test.beforeEach(async ({ page }) => {
+let page
+test.beforeEach(async () => {
+  const browser = await chromium.launch({ headless: false })
+  const context = await browser.newContext()
+  page = await context.newPage()
+
+  //Todo: move to a seperate helper
+  PlaywrightBlocker.fromPrebuiltAdsAndTracking(fetch).then((blocker) => {
+    blocker.enableBlockingInPage(page)
+  })
+
   await page.goto('https://www.redmine.org/')
 })
 
-test.describe.skip('Main page', () => {
-  //! Redirection in the “Readmine books” section
-  test.skip('should redirect the browser after clicking on the book image', async ({
-    page,
-  }) => {
-    // const mainPage = new MainPage(page)
-    // await mainPage.masteringRedmineBook.scrollIntoViewIfNeeded()
-    // await mainPage.clickOnMasteringRedmineBook()
-    // await page.waitForURL('https://www.redmine.org/projects/redmine/issues')
+test.afterEach(async () => {
+  await page.close()
+})
 
+test.describe('Issues page', () => {
+  test('should show page number in the URL after clicking on the pagination', async () => {
     const mainMenu = new MainMenu(page)
     await mainMenu.clickOnIssuesLink()
-    await expect(page).toHaveURL(/issues/, { timeout: 10000 })
-    // await expect(page).toHaveURL('https://www.redmine.org')
+
+    await page.waitForURL(/issues/)
+    await expect(page).toHaveURL(/issues/)
+  })
+})
+
+test.describe('Main page', () => {
+  //! Redirection in the “Readmine books” section
+  test('should redirect the browser after clicking on the book image', async () => {
+    const mainPage = new MainPage(page)
+    await mainPage.masteringRedmineBook.scrollIntoViewIfNeeded()
+    await mainPage.clickOnMasteringRedmineBook()
+
+    //Todo: change the expected URL
+    await expect(page).toHaveURL(
+      'https://www.packtpub.com/product/mastering-redmine-second-edition/9781785881305'
+    )
   })
   //! Search
-  test.skip('should open the results page with the searched word ', async ({
-    page,
-  }) => {
+  test('should open the results page with the searched word ', async () => {
     const topMenu = new TopMenu(page)
     await topMenu.clickOnSearchField()
   })
 })
 
-test.describe.skip('Issues page', () => {
-  test('should show page number in the URL after clicking on the pagination', async ({
-    page,
-  }) => {
-    //! Close the ads
-    // page.on('request', async () => {
-    //   console.log('Current URL - ' + page.url())
-
-    // if (page.url().includes('google_vignette')) {
-    //   // console.log('Condition URL - ' + page.url())
-    //   await page.waitForURL(/google_vignette/)
-    //   // await page.waitForSelector('div[aria-label="Close ad"] > div')
-    //   const closeAdsBtn = page.locator('div [aria-label="Close ad"] > div')
-    //   await closeAdsBtn.waitFor()
-    //   await closeAdsBtn.click()
-    // }
-    // })
-
-    const mainMenu = new MainMenu(page)
-    // const issuesPage = new IssuesPage(page)
-    await mainMenu.clickOnIssuesLink()
-
-    if (page.url().includes('google_vignette')) {
-      // await page.waitForURL(/google_vignette/)
-      const closeAdsBtn = await page.locator(
-        'div [aria-label="Close ad"] > div'
-      )
-      // await closeAdsBtn.waitFor()
-      await closeAdsBtn.click()
-    }
-
-    await page.waitForURL(/issues/)
-    await expect(page).toHaveURL(/issues/)
-
-    // await issuesPage.clickOnNextPageBtn()
-    // await expect(page).toHaveURL(/page=2/)
-  })
-})
-
-test.describe.skip('Registration page', () => {
-  test('should allow a user to register', async ({ page }) => {
+test.describe('Registration page', () => {
+  test('should allow a user to register', async () => {
     const topMenu = new TopMenu(page)
     const registerPage = new RegisterPage(page)
     const loginPage = new LoginPage(page)
@@ -88,6 +73,7 @@ test.describe.skip('Registration page', () => {
 
     await topMenu.clickOnRegisterLink()
 
+    //TODO: move to a seperate function `createUser`
     await registerPage.clickOnLoginInput()
     await registerPage.setLoginInput(userData.email)
 
@@ -114,7 +100,7 @@ test.describe.skip('Registration page', () => {
 })
 
 test.describe('Top menu links', () => {
-  test('should open to the correspong pages', async ({ page }) => {
+  test('should open to the correspong pages', async () => {
     const topMenu = new TopMenu(page)
     const topMenuLinksUrl = topMenu.topMenuLinksUrl
 

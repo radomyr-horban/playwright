@@ -1,27 +1,23 @@
 //! 1
-await page.route('/google_vignette/', (route) => {
-  if (route.request().url().includes('google_vignette')) {
-    route.abort()
-  } else {
-    route.continue()
-  }
+await page.route('**/*', async (request) => {
+  request.request().url().includes('google_vignette')
+    ? request.abort()
+    : request.continue()
+  return
 })
 
 //! 2
-await page.route('**/google_vignette**', (route) => {
-  // route.abort()
-  console.log('resource type: ' + route.request().resourceType())
-  // page.locator('div [aria-label="Close ad"] > div').click()
+await page.route(/google_vignette/, () => {
+  page.locator('div [aria-label="Close ad"] > div').click()
 })
 
 //! 3
 if (await page.url().includes('google_vignette')) {
-  // console.log("resource type: " + route.request().resourceType())
   await page.locator('div [aria-label="Close ad"] > div').click()
 }
 
 //! 4
-await page.route('**/google_vignette**', (route) => {
+await page.route(/google_vignette/, (route) => {
   return route.abort()
 })
 
@@ -37,3 +33,9 @@ page.on('load', async (page) => {
     await page.locator('div [aria-label="Close ad"] > div').click()
   }
 })
+//! 7
+
+const blockElement = await page.locator('div[id = "ad_position_box"]')
+if (await blockElement.isVisible()) {
+  await page.locator('div [aria-label="Close ad"] > div').click()
+}
