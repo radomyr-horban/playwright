@@ -59,7 +59,7 @@ jobs:
 
       - name: Add link to branch description
         run: |
-          echo "Allure Report: [GitHub Pages](https://github.com/$GITHUB_REPOSITORY/)" >> branch-description.txt
+          echo "Allure Report: [GitHub Pages](https://radomyr-horban.github.com/$GITHUB_REPOSITORY/tree/gh-pages/allure-report)" >> branch-description.txt
           # git checkout gh-pages
 
           # git config user.name "Radomyr Horban"
