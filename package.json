@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "npx playwright test"
+    "test": "npx playwright test",
+    "generate-allure-report": "allure generate allure-results -o allure-report --clean",
+    "open-allure-report": "allure open allure-report"
   },
   "keywords": [],
   "author": "",
@@ -13,5 +15,9 @@
     "@playwright/test": "^1.38.1",
     "@types/node": "^20.7.0",
     "allure-playwright": "^2.8.1"
+  },
+  "dependencies": {
+    "@cliqz/adblocker-playwright": "^1.26.7",
+    "cross-fetch": "^4.0.0"
   }
 }
