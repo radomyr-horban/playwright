@@ -15,7 +15,7 @@ import { blockAds } from '../helpers/blockAds.helper'
 import { createDefaultUser } from '../helpers/createDefaultUser.helper'
 
 test.beforeEach(async ({ page }) => {
-  blockAds(page)
+  await blockAds(page)
   await page.goto('https://www.redmine.org/')
 })
 

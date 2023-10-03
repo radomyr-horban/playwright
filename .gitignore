@@ -6,4 +6,3 @@ playwright/.cache/
 #! should these folders be ignored? 
 allure-results/
 allure-report/
-ad-blocker
