@@ -1,70 +1,79 @@
 // @ts-check
+import { test, expect } from '@playwright/test'
 
-const { test, expect } = require('@playwright/test')
-const { chromium } = require('playwright')
+import MainMenu from '../components/main-menu'
+import TopMenu from '../components/top-menu'
 
-const { PlaywrightBlocker } = require('@cliqz/adblocker-playwright')
-const { default: fetch } = require('cross-fetch')
+import IssuesPage from '../pages/issues.page'
+import MainPage from '../pages/main.page'
+import RegisterPage from '../pages/register.page'
+import LoginPage from '../pages/login.page'
+import SearchResultsPage from '../pages/searchResults.page'
 
-const { default: MainMenu } = require('../components/main-menu')
-const { default: TopMenu } = require('../components/top-menu')
+import { generateUserData } from '../helpers/generateUserData.helper'
+import { blockAds } from '../helpers/blockAds.helper'
+import { createDefaultUser } from '../helpers/createDefaultUser.helper'
 
-const { default: IssuesPage } = require('../pages/issues.page')
-const { default: MainPage } = require('../pages/main.page')
-const { default: RegisterPage } = require('../pages/register.page')
-const { default: LoginPage } = require('../pages/login.page')
-
-const { generateUserData } = require('../helpers/generateUserData.helper')
-
-let page
-test.beforeEach(async () => {
-  const browser = await chromium.launch({ headless: false })
-  const context = await browser.newContext()
-  page = await context.newPage()
-
-  //Todo: move to a seperate helper
-  PlaywrightBlocker.fromPrebuiltAdsAndTracking(fetch).then((blocker) => {
-    blocker.enableBlockingInPage(page)
-  })
-
+test.beforeEach(async ({ page }) => {
+  blockAds(page)
   await page.goto('https://www.redmine.org/')
 })
 
-test.afterEach(async () => {
+test.afterEach(async ({ page }) => {
   await page.close()
 })
 
-test.describe('Issues page', () => {
-  test('should show page number in the URL after clicking on the pagination', async () => {
-    const mainMenu = new MainMenu(page)
-    await mainMenu.clickOnIssuesLink()
-
-    await page.waitForURL(/issues/)
-    await expect(page).toHaveURL(/issues/)
-  })
-})
-
 test.describe('Main page', () => {
-  //! Redirection in the “Readmine books” section
-  test('should redirect the browser after clicking on the book image', async () => {
+  test('should open online shop page after clicking on the book image', async ({
+    page,
+  }) => {
     const mainPage = new MainPage(page)
+
     await mainPage.masteringRedmineBook.scrollIntoViewIfNeeded()
     await mainPage.clickOnMasteringRedmineBook()
 
-    //Todo: change the expected URL
     await expect(page).toHaveURL(
-      'https://www.packtpub.com/product/mastering-redmine-second-edition/9781785881305'
+      /www.packtpub.com\/product\/mastering-redmine-second-edition/
     )
   })
-  //! Search
-  test('should open the results page with the searched word ', async () => {
+
+  test('should open the results page with items containing the searched word', async ({
+    page,
+  }) => {
     const topMenu = new TopMenu(page)
+    const searchResultsPage = new SearchResultsPage(page)
+    const searchedWord = 'car'
+
     await topMenu.clickOnSearchField()
+    await topMenu.setSearchField(searchedWord)
+    await page.keyboard.press('Enter')
+
+    await expect(page).toHaveURL(/search/)
+    await expect(page).toHaveURL(new RegExp(searchedWord))
+    await expect(searchResultsPage.resultsDescription).toContainText(
+      searchedWord
+    )
+  })
+})
+
+test.describe('Issues page', () => {
+  test('should show page number in the URL after clicking on the pagination', async ({
+    page,
+  }) => {
+    const mainMenu = new MainMenu(page)
+    const issuesPage = new IssuesPage(page)
+
+    await mainMenu.clickOnIssuesLink()
+    await page.waitForURL(/issues/)
+    await expect(page).toHaveURL(/issues/)
+
+    await issuesPage.clickOnNextPageBtn()
+    await expect(page).toHaveURL(/page=2/)
   })
 })
 
 test.describe('Registration page', () => {
-  test('should allow a user to register', async () => {
+  test('should allow a user to register', async ({ page }) => {
     const topMenu = new TopMenu(page)
     const registerPage = new RegisterPage(page)
     const loginPage = new LoginPage(page)
@@ -72,27 +81,7 @@ test.describe('Registration page', () => {
     const userData = generateUserData()
 
     await topMenu.clickOnRegisterLink()
-
-    //TODO: move to a seperate function `createUser`
-    await registerPage.clickOnLoginInput()
-    await registerPage.setLoginInput(userData.email)
-
-    await registerPage.clickOnPasswordInput()
-    await registerPage.setPasswordInput(userData.password)
-
-    await registerPage.clickOnPasswordConfirmationInput()
-    await registerPage.setPasswordConfirmationInput(userData.password)
-
-    await registerPage.clickOnFirstnameInput()
-    await registerPage.setFirstnameInput(userData.firstName)
-
-    await registerPage.clickOnLastnameInput()
-    await registerPage.setLastnameInput(userData.lastName)
-
-    await registerPage.clickOnEmailInput()
-    await registerPage.setEmailInput(userData.email)
-
-    await registerPage.clickOnSubmitBtn()
+    createDefaultUser(registerPage, userData)
 
     await expect(page).toHaveURL(/login/)
     await expect(loginPage.successfulRegistrationMsg).toBeVisible()
@@ -100,15 +89,14 @@ test.describe('Registration page', () => {
 })
 
 test.describe('Top menu links', () => {
-  test('should open to the correspong pages', async () => {
+  test('should open the corresponding pages after clicking on them', async ({
+    page,
+  }) => {
     const topMenu = new TopMenu(page)
     const topMenuLinksUrl = topMenu.topMenuLinksUrl
 
-    //TODO: move into a separate method
     for (let link in topMenuLinksUrl) {
-      console.log(link)
       await topMenu.clickTopMenuLinkByClassName(link)
-
       const expectedURL = new RegExp(topMenuLinksUrl[link])
       await expect(page).toHaveURL(expectedURL)
     }
