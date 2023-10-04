@@ -14,9 +14,21 @@ import { generateUserData } from '../helpers/generateUserData.helper'
 import { blockAds } from '../helpers/blockAds.helper'
 import { createDefaultUser } from '../helpers/createDefaultUser.helper'
 
+let mainMenu, topMenu
+let mainPage, issuesPage, registerPage, loginPage, searchResultsPage
+
 test.beforeEach(async ({ page }) => {
   await blockAds(page)
   await page.goto('https://www.redmine.org/')
+
+  mainMenu = new MainMenu(page)
+  topMenu = new TopMenu(page)
+
+  mainPage = new MainPage(page)
+  issuesPage = new IssuesPage(page)
+  loginPage = new LoginPage(page)
+  registerPage = new RegisterPage(page)
+  searchResultsPage = new SearchResultsPage(page)
 })
 
 test.afterEach(async ({ page }) => {
@@ -27,8 +39,6 @@ test.describe('Main page', () => {
   test('should open online shop page after clicking on the book image', async ({
     page,
   }) => {
-    const mainPage = new MainPage(page)
-
     await mainPage.masteringRedmineBook.scrollIntoViewIfNeeded()
     await mainPage.clickOnMasteringRedmineBook()
 
@@ -40,8 +50,6 @@ test.describe('Main page', () => {
   test('should open the results page with items containing the searched word', async ({
     page,
   }) => {
-    const topMenu = new TopMenu(page)
-    const searchResultsPage = new SearchResultsPage(page)
     const searchedWord = 'car'
 
     await topMenu.clickOnSearchField()
@@ -60,9 +68,6 @@ test.describe('Issues page', () => {
   test('should show page number in the URL after clicking on the pagination', async ({
     page,
   }) => {
-    const mainMenu = new MainMenu(page)
-    const issuesPage = new IssuesPage(page)
-
     await mainMenu.clickOnIssuesLink()
     await page.waitForURL(/issues/)
     await expect(page).toHaveURL(/issues/)
@@ -74,10 +79,6 @@ test.describe('Issues page', () => {
 
 test.describe('Registration page', () => {
   test('should allow a user to register', async ({ page }) => {
-    const topMenu = new TopMenu(page)
-    const registerPage = new RegisterPage(page)
-    const loginPage = new LoginPage(page)
-
     const userData = generateUserData()
 
     await topMenu.clickOnRegisterLink()
@@ -92,7 +93,6 @@ test.describe('Top menu links', () => {
   test('should open the corresponding pages after clicking on them', async ({
     page,
   }) => {
-    const topMenu = new TopMenu(page)
     const topMenuLinksUrl = topMenu.topMenuLinksUrl
 
     for (let link in topMenuLinksUrl) {
