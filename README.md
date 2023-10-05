@@ -24,11 +24,11 @@ Download and install:
 
 #### To generate a Playwright's Allure report of test results run
 
-    npm run generate-allure-report
+    npm run allure:generate
 
 #### To open the Playwright's Allure report in a browser run
 
-    npm run open-allure-report
+    npm run allure:serve
 
 #### **IMPORTANT**
 

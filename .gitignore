@@ -1,8 +1,7 @@
 node_modules/
-# test-results/
-# playwright-report/
-# playwright/.cache/
+test-results/
+playwright-report/
+playwright/.cache/
 
-#! should these folders be ignored? 
-# allure-results/
-# allure-report/
+allure-results/
+allure-report/
